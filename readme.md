@@ -12,6 +12,7 @@ Blogify is a blogging platform where users can publish their blogs, read blogs f
 
 ## Upcoming Features (To-Do)
 
+- **authorization**
 - **Edit/Delete/Draft Blogs**: Users will be able to rewrite, delete, or draft their blogs.
 - **View Count**: Track the number of views for each blog.
 - **Likes**: Users will be able to like blogs.
