@@ -13,7 +13,7 @@ const blogRoute = require("./routes/blog.route");
 const {checkForAuthenticationCookie} = require("./middlewares/authentication.middlware");
 
 const mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017/Blogify";
-
+console.log(mongoUrl);
 mongoose.connect(mongoUrl)
 .then(e => console.log("Mongodb is connected"))
 .catch(e =>console.log("something happened!!"));
