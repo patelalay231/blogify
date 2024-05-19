@@ -15,7 +15,7 @@ const {checkForAuthenticationCookie} = require("./middlewares/authentication.mid
 const mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017/Blogify";
 console.log(mongoUrl);
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(mongoUrl)
   .then(() => console.log("Mongodb is connected"))
   .catch(err => {
     console.error("Error connecting to MongoDB:", err.message);
