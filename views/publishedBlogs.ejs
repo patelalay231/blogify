@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/head') %>
+    <title>My Blogs</title>
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            color: #333;
+        }
+
+        .card-text {
+            color: #666;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <%- include('./partials/script') %>
+    <%- include('./partials/nav') %>
+    <div class="container mt-3">
+        <div class="row">
+            <% blogs.forEach((blog) => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="/<%= blog.coverImageUrl %>" class="card-img-top" alt="Blog Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= blog.title %></h5>
+                            <p class="card-text"><%= blog.description.split(' ').slice(0, 30).join(' ') %>...</p>
+                            <a href="/blog/<%= blog._id %>" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+    
+</body>
+</html>
