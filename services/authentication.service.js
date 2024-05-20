@@ -21,5 +21,6 @@ function verifyToken(token){
 
 module.exports = {
     createTokenForUser,
-    verifyToken
+    verifyToken,
 };
+

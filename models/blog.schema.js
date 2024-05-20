@@ -17,10 +17,15 @@ const blogSchema = new Schema({
         type : String,
         default : 'images/defaultBlog.png',
     },
+    status : {
+        type : String,
+        enum : ["PUBLISHED","DRAFT"],
+        default : "PUBLISHED",
+    },
     createdBy:{
         type:Schema.Types.ObjectId,
         ref:"user",
-    }
+    },
 },{
     timestamps: true,
 });

@@ -4,6 +4,8 @@ const path = require("path");
 const User = require("../models/user.schema");
 const Comment = require("../models/comment.schema");
 const Blog = require("../models/blog.schema");
+const {restrictToLoggedinUserOnly} = require("../middlewares/authentication.middleware");
+
 const router = Router();
 
 const storage = multer.diskStorage({
@@ -19,10 +21,10 @@ const storage = multer.diskStorage({
 const upload = multer({storage : storage}); 
 
 router.get('/',async (req,res) => {
-    const allBlogs = await Blog.find({});
+    const allBlogs = await Blog.find({status: "PUBLISHED"});
     return res.render('home',{
         user: req.user,
-        blogs: allBlogs
+        blogs: allBlogs,
     });
 });
 
@@ -40,20 +42,34 @@ router.get('/blog/:id',async (req,res) => {
     });
 });
 
-router.get('/addBlog',(req,res) => {
+router.get('/addBlog',restrictToLoggedinUserOnly,(req,res) => {
     return res.render("addBlog",{user: req.user,});
 }); 
 
-router.post('/addBlog',upload.single('coverImage'),async (req,res) => {
+router.post('/addBlog',restrictToLoggedinUserOnly,upload.single('coverImage'),async (req,res) => {
     const {title,content,description} = req.body;
     const blog  = await Blog.create({
         title : title,
         body : content,
         description :description,
         createdBy : req.user._id,
-        coverImageUrl : `uploads/${req.file.filename}`
+        coverImageUrl : `uploads/${req.file.filename}`,
+        status : "PUBLISHED",
     })
     return res.redirect(`blog/${blog._id}`);
+});
+
+router.post('/draftBlog',restrictToLoggedinUserOnly,upload.single('coverImage'),async (req,res) => {
+    const {title,content,description} = req.body;
+    const blog  = await Blog.create({
+        title : title,
+        body : content,
+        description :description,
+        createdBy : req.user._id,
+        coverImageUrl : `uploads/${req.file.filename}`,
+        status : "DRAFT",
+    })
+    return res.redirect(`/`);
 });
 
 router.get('/publishedBlog',async (req,res) => {
@@ -61,7 +77,7 @@ router.get('/publishedBlog',async (req,res) => {
     return res.render("publishedBlogs",{blogs:blogs,user: req.user,});
 });
 
-router.post('/comment/:id',async(req,res)=>{
+router.post('/comment/:id',restrictToLoggedinUserOnly,async(req,res)=>{
     const blogId = req.params.id;
     const {comment} = req.body;
     await Comment.create({
@@ -71,4 +87,44 @@ router.post('/comment/:id',async(req,res)=>{
     });
     return res.redirect(`/blog/${blogId}`);
 });
+
+router.post('/comment/:id',restrictToLoggedinUserOnly,async(req,res)=>{
+    const blogId = req.params.id;
+    const {comment} = req.body;
+    await Comment.create({
+        body : comment,
+        userId: req.user._id,
+        blogId : blogId
+    });
+    return res.redirect(`/blog/${blogId}`);
+});
+
+router.get('/editBlog/:id',restrictToLoggedinUserOnly,async (req,res) => {
+    const blog = await Blog.findById(req.params.id);
+    return res.render("editBlog",{blog:blog,user: req.user});
+});
+
+router.post('/editBlog/:id',restrictToLoggedinUserOnly,upload.single('coverImage'),async (req,res) => {
+    const {title,body,description ,status} = req.body;
+
+    if(req.file) coverImageUrl = `uploads/${req.file.filename}`;
+    else{
+        const existingBlog = await Blog.findById(req.params.id);
+        coverImageUrl = existingBlog.coverImageUrl;
+    }
+    const blog  = await Blog.findByIdAndUpdate(req.params.id,{
+        title : title,
+        body : body,
+        description :description,
+        coverImageUrl : coverImageUrl,
+        status : status
+    },{ new: true });
+    return res.redirect(`/publishedBlog`);
+});
+
+router.get('/deleteBlog/:id',async (req,res) => {
+    await Blog.findByIdAndDelete(req.params.id);
+    return res.redirect(`/publishedBlog`);
+});
+
 module.exports = router;

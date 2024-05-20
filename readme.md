@@ -9,11 +9,11 @@ Blogify is a blogging platform where users can publish their blogs, read blogs f
 - **Comment on Blogs**: Users can comment on blogs.
 - **Profile Management**: Users can update their profiles.
 - **Authentication**: User authentication including signup, login, and logout.
+- **Authorization** : Only authorized users can add blogs.
+- **Edit/Delete/Draft Blogs**: Users will be able to rewrite, delete, or draft their blogs.
 
 ## Upcoming Features (To-Do)
 
-- **authorization**
-- **Edit/Delete/Draft Blogs**: Users will be able to rewrite, delete, or draft their blogs.
 - **View Count**: Track the number of views for each blog.
 - **Likes**: Users will be able to like blogs.
 - **Sorting & Filtering**: Sort and filter blogs by popularity, likes, or latest posts.

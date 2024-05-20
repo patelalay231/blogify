@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8000;
 
 const userRoute = require("./routes/user.route");
 const blogRoute = require("./routes/blog.route");
-const {checkForAuthenticationCookie} = require("./middlewares/authentication.middlware");
+const {checkForAuthenticationCookie,restrictToLoggedinUserOnly} = require("./middlewares/authentication.middleware");
 
 const mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017/Blogify";
 console.log(mongoUrl);

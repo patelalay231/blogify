@@ -15,6 +15,13 @@ function checkForAuthenticationCookie(cookieName){
     };
 }
 
+function restrictToLoggedinUserOnly(req,res,next){
+    const token = req.cookies.token;
+    if(!token) return res.redirect("/user/login");
+    next();
+}
+
 module.exports = {
     checkForAuthenticationCookie,
+    restrictToLoggedinUserOnly
 }

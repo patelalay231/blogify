@@ -58,14 +58,18 @@ router.get('/profile',(req,res)=>{
 router.post('/profile',upload.single('profilePicture'),async (req,res)=>{
     const {name} = req.body;
     let profileImageUrl;
-    if(req.file.filename) profileImageUrl = `profilePicture/${req.file.filename}`;
-    else profileImageUrl = 'images/defaultAvtar.png';
+    if(req.file) profileImageUrl = `profilePicture/${req.file.filename}`;
+    else{
+        const existingProfilePictureUrl = await User.findById(req.user._id);
+        coverImageUrl = existingProfilePictureUrl.profileImageUrl;
+    }
     console.log(profileImageUrl);
     const user  = await User.findByIdAndUpdate(req.user._id,{
         name:name,
         profileImageUrl : profileImageUrl
     } ,{ new: true });
     req.user = user;
+
     return res.clearCookie("token").redirect("/user/login");
 })
 

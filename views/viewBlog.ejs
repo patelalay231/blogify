@@ -4,6 +4,7 @@
     <%- include('./partials/head') %>
     <title><%= blog.title %></title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         .comment-box {
             background-color: #f8f9fa;
@@ -38,6 +39,11 @@
             margin-left: auto;
             color: #6c757d;
         }
+        .edit-button {
+            margin-left: auto;
+            color: #007bff;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -48,17 +54,22 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="/<%= author.profileImageUrl %>" class="rounded-circle mr-3" alt="<%= author.username %>" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div class="d-flex align-items-center mb-3 justify-content-between">
+                            <div class="d-flex">
+                                <img src="/<%= author.profileImageUrl %>" class="rounded-circle mr-3" alt="<%= author.username %>" style="width: 50px; height: 50px; object-fit: cover;">
                             <div>
                                 <strong><%= author.name %></strong><br>
                                 <small class="text-muted"><%= new Date(blog.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></small>
                             </div>
+                            </div>
+                            <% if (locals.user._id == blog.createdBy) { %>
+                                <a href="/editBlog/<%= blog._id %>" class="btn"><i class="fas fa-edit"></i></a>
+                            <% } %>
                         </div>
                         <h1 class="card-title"><%= blog.title %></h1>
                         <p class="card-sub-title"><%= blog.description %></p>
                         <img src="/<%= blog.coverImageUrl %>" class="card-img-top" alt="Blog Image">
-                        <p class="card-text"><%= blog.body %></p>
+                        <p class="card-text mt-3"><%= blog.body %></p>
                     </div>
                 </div>
             </div>
@@ -100,7 +111,6 @@
             </div>
         </div>
     </div>
-    
-    </div>
+    <%- include('./partials/footer') %>
 </body>
 </html>

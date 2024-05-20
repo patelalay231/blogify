@@ -3,6 +3,8 @@
 <head>
     <%- include('./partials/head') %>
     <title>Add New Blog</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
     <%- include('./partials/script') %>
@@ -11,7 +13,7 @@
         Create your blog
     </h3>
     <div class="container mt-3">
-        <form method="POST" action="/addBlog" enctype="multipart/form-data">
+        <form id="blogForm" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="tile" class="form-label">Title</label>
               <input type="text" class="form-control" name="title"aria-describedby="titleHelp" required>
@@ -28,8 +30,20 @@
                 <label for="coverImage" class="form-label">Upload Cover Image</label>
                 <input class="form-control" type="file" name="coverImage" required>
             </div>
-            <button type="submit" class="btn btn-primary">Publish</button>
+            <button type="submit" class="btn btn-primary mb-3" onclick="setAction('/addBlog')">
+                <i class="fas fa-check-circle"></i> Publish
+            </button>
+            <button type="submit" class="btn btn-secondary mb-3" onclick="setAction('/draftBlog')">
+                <i class="far fa-file-alt"></i> Draft
+            </button>
+            
           </form>
     </div>
+    <script>
+        function setAction(route) {
+            document.getElementById('blogForm').action = route;
+        }
+    </script>
+    <%- include('./partials/footer') %>
 </body>
 </html>
