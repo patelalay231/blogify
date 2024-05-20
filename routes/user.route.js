@@ -1,8 +1,10 @@
 const Router = require("express");
 const path = require("path");
 const User = require("../models/user.schema");
+const Blog = require("../models/blog.schema");
 const router = Router();
 const multer = require("multer");
+const {restrictToLoggedinUserOnly} = require("../middlewares/authentication.middleware");
 
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
@@ -71,6 +73,11 @@ router.post('/profile',upload.single('profilePicture'),async (req,res)=>{
     req.user = user;
 
     return res.clearCookie("token").redirect("/user/login");
+})
+
+router.get('/dashboard',restrictToLoggedinUserOnly,async (req,res) => {
+    const userBlogs = await Blog.find({createdBy : req.user._id});
+    return res.render("dashboard",{user : req.user,userBlogs: userBlogs});
 })
 
 module.exports = router;
