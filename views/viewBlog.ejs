@@ -44,6 +44,13 @@
             color: #007bff;
             cursor: pointer;
         }
+        .view-count {
+            color: #6c757d;
+        }
+        .like-button, .dislike-button {
+            color: #007bff;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -57,10 +64,10 @@
                         <div class="d-flex align-items-center mb-3 justify-content-between">
                             <div class="d-flex">
                                 <img src="/<%= author.profileImageUrl %>" class="rounded-circle mr-3" alt="<%= author.username %>" style="width: 50px; height: 50px; object-fit: cover;">
-                            <div>
-                                <strong><%= author.name %></strong><br>
-                                <small class="text-muted"><%= new Date(blog.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></small>
-                            </div>
+                                <div>
+                                    <strong><%= author.name %></strong><br>
+                                    <small class="text-muted"><%= new Date(blog.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></small>
+                                </div>
                             </div>
                             <% if (locals.user._id == blog.createdBy) { %>
                                 <a href="/editBlog/<%= blog._id %>" class="btn"><i class="fas fa-edit"></i></a>
@@ -70,6 +77,21 @@
                         <p class="card-sub-title"><%= blog.description %></p>
                         <img src="/<%= blog.coverImageUrl %>" class="card-img-top" alt="Blog Image">
                         <p class="card-text mt-3"><%= blog.body %></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-chart-line view-count"></i> <%= blog.viewsCount %> Views
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-primary like-button" data-blog-id="<%= blog._id %>">
+                                    <i class="far fa-thumbs-up"></i> <span id="like-count"><%= blog.likes.length %></span> Likes
+                                </button>
+                                <button type="button" class="btn btn-outline-danger dislike-button" data-blog-id="<%= blog._id %>">
+                                    <i class="far fa-thumbs-down"></i> <span id="dislike-count"><%= blog.dislikes.length %></span> Dislikes
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,5 +134,43 @@
         </div>
     </div>
     <%- include('./partials/footer') %>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.like-button').click(function() {
+                var blogId = $(this).data('blog-id');
+                var likeCountElement = $('#like-count');
+                var dislikeCountElement = $('#dislike-count');
+                $.ajax({
+                    url: '/likeBlog/' + blogId,
+                    method: 'POST',
+                    success: function(data) {
+                        likeCountElement.text(data.likes);
+                        dislikeCountElement.text(data.dislikes);
+                    },
+                    error: function(err) {
+                        console.error(err);
+                    }
+                });
+            });
+
+            $('.dislike-button').click(function() {
+                var blogId = $(this).data('blog-id');
+                var likeCountElement = $('#like-count');
+                var dislikeCountElement = $('#dislike-count');
+                $.ajax({
+                    url: '/dislikeBlog/' + blogId,
+                    method: 'POST',
+                    success: function(data) {
+                        likeCountElement.text(data.likes);
+                        dislikeCountElement.text(data.dislikes);
+                    },
+                    error: function(err) {
+                        console.error(err);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -30,10 +30,14 @@ router.get('/',async (req,res) => {
 
 router.get('/blog/:id',async (req,res) => {
     const blog = await Blog.findById(req.params.id);
+    await Blog.findByIdAndUpdate(req.params.id,{
+        viewsCount : blog.viewsCount+=1
+    });
     const author = await User.findById(blog.createdBy);
     const comments = await Comment.find({ blogId: blog._id })
     .populate('userId')
     .sort({ createdAt: -1 }); // Sort comments in descending order by createdAt timestamp
+
     return res.render('viewBlog',{
         user: req.user,
         blog: blog,
@@ -125,6 +129,34 @@ router.post('/editBlog/:id',restrictToLoggedinUserOnly,upload.single('coverImage
 router.get('/deleteBlog/:id',async (req,res) => {
     await Blog.findByIdAndDelete(req.params.id);
     return res.redirect(`/publishedBlog`);
+});
+
+// Like a blog
+router.post('/likeBlog/:id', async (req, res) => {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog.likes.includes(req.user._id)) {
+        if(blog.dislikes.includes(req.user._id)){
+            blog.dislikes.pull(req.user._id);
+        }
+        blog.likes.push(req.user._id);
+        await blog.save();
+    }
+    res.json({ dislikes: blog.dislikes.length ,likes: blog.likes.length });
+});
+
+// Dislike a blog
+router.post('/dislikeBlog/:id', async (req, res) => {
+        const blog = await Blog.findById(req.params.id);
+
+        if (!blog.dislikes.includes(req.user._id)) {
+            blog.dislikes.push(req.user._id);
+            if(blog.likes.includes(req.user._id)){
+                blog.likes.pull(req.user._id);
+            }
+            await blog.save();
+        }
+
+        res.json({ dislikes: blog.dislikes.length ,likes: blog.likes.length });
 });
 
 module.exports = router;
