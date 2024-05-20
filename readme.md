@@ -2,6 +2,8 @@
 
 Blogify is a blogging platform where users can publish their blogs, read blogs from others, comment on posts, and update their profiles. It includes essential features for user authentication such as signup, login, and logout.
 
+live - https://blogify-1glo.onrender.com/
+
 ## Features
 
 - **Publish Blogs**: Users can write and publish their own blogs.
