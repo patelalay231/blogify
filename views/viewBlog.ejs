@@ -69,8 +69,10 @@
                                     <small class="text-muted"><%= new Date(blog.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></small>
                                 </div>
                             </div>
-                            <% if (locals.user._id == blog.createdBy) { %>
-                                <a href="/editBlog/<%= blog._id %>" class="btn"><i class="fas fa-edit"></i></a>
+                            <% if (locals.user) { %>
+                                <% if (user._id == blog.createdBy) { %>
+                                    <a href="/editBlog/<%= blog._id %>" class="btn"><i class="fas fa-edit"></i></a>
+                                <% } %>
                             <% } %>
                         </div>
                         <h1 class="card-title"><%= blog.title %></h1>
